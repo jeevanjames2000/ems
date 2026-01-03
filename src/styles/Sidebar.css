@@ -1,4 +1,4 @@
-/* Mobile Header & Overlay Defaults */
+ /* Mobile Header & Overlay  */
 .mobile-header {
     display: none;
     align-items: center;
@@ -64,8 +64,8 @@
 }
 
 .logo-container {
+    display: none;
     margin-bottom: 3rem;
-    display: flex;
     align-items: center;
     gap: 0.75rem;
 }
@@ -208,6 +208,7 @@
 
     .logo-container {
         margin-bottom: 0;
+        display: flex;
     }
 
     .close-sidebar-btn {
