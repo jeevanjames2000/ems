@@ -8,3 +8,14 @@
     padding: 2rem;
     overflow-y: auto;
 }
+
+@media (max-width: 768px) {
+    .dashboard-layout {
+        flex-direction: column;
+    }
+
+    .main-content {
+        padding: 1rem;
+        overflow-y: visible;
+    }
+}

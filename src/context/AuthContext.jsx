@@ -1,5 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import toast from "react-hot-toast";
+
 const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
@@ -19,14 +21,17 @@ export const AuthProvider = ({ children }) => {
       const mockUser = { name: "Admin User", email, role: "admin" };
       setUser(mockUser);
       localStorage.setItem("user", JSON.stringify(mockUser));
+      toast.success("Successfully logged in!");
       navigate("/dashboard");
       return true;
     }
+    toast.error("Invalid email or password");
     return false;
   };
   const logout = () => {
     setUser(null);
     localStorage.removeItem("user");
+    toast.success("Successfully logged out!");
     navigate("/login");
   };
   return (

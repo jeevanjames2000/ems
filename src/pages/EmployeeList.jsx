@@ -3,6 +3,7 @@ import { employeeService } from "../services/employeeService";
 import { Plus, Search, Edit2, Trash2, Printer, Filter } from "lucide-react";
 import EmployeeForm from "../components/EmployeeForm";
 import { GENDER_OPTIONS } from "../data/dummyData";
+import toast from "react-hot-toast";
 import "../styles/EmployeeList.css";
 const EmployeeList = () => {
   const [employees, setEmployees] = useState([]);
@@ -49,14 +50,17 @@ const EmployeeList = () => {
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this employee?")) {
       employeeService.delete(id);
+      toast.success("Employee deleted successfully");
       loadEmployees();
     }
   };
   const handleFormSubmit = (data) => {
     if (editingEmployee) {
       employeeService.update(editingEmployee.id, data);
+      toast.success("Employee updated successfully");
     } else {
       employeeService.add(data);
+      toast.success("Employee added successfully");
     }
     setShowForm(false);
     loadEmployees();
@@ -189,6 +193,10 @@ const EmployeeList = () => {
                             ...emp,
                             active: newStatus,
                           });
+                          toast.success(
+                            `Employee ${newStatus ? "activated" : "deactivated"
+                            } successfully`
+                          );
                           loadEmployees();
                         }}
                         className="status-toggle"
