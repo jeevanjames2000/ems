@@ -17,6 +17,7 @@ import { GENDER_OPTIONS } from "../data/dummyData";
 import toast from "react-hot-toast";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import SEO from "../components/common/SEO";
 import "../styles/EmployeeList.css";
 const EmployeeList = () => {
   const [employees, setEmployees] = useState([]);
@@ -121,6 +122,10 @@ const EmployeeList = () => {
   };
   return (
     <div className="employee-page">
+      <SEO
+        title="Employees"
+        description="Manage your employee list, add new members, and track status."
+      />
       <div className="page-header">
         <h1 className="page-title">Employees</h1>
         <div className="header-actions">
@@ -309,13 +314,11 @@ const EmployeeList = () => {
           isModal={true}
         />
       </Modal>
-      {}
       <div style={{ position: "absolute", left: "-9999px", top: "-9999px" }}>
         <div ref={componentRef}>
           <EmployeeCard employee={printEmployee} />
         </div>
       </div>
-      {}
       <div className="print-only-container" style={{ display: "none" }}>
         <EmployeeCard employee={printEmployee} />
       </div>

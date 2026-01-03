@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { employeeService } from "../services/employeeService";
 import { Users, UserCheck, UserX } from "lucide-react";
+import SEO from "../components/common/SEO";
 import "../styles/Dashboard.css";
 
 const StatCard = ({ title, value, icon: Icon, color, bg }) => (
@@ -31,6 +32,7 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-container">
+      <SEO title="Dashboard" description="Overview of employee statistics and status." />
       <h1 className="dashboard-title">Dashboard Overview</h1>
       <div className="stats-grid">
         <StatCard

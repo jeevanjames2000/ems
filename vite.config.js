@@ -7,7 +7,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["vite.svg"],
+      includeAssets: ["ems_logo.png"],
       manifest: {
         name: "Employee Management System",
         short_name: "EMS",
@@ -18,9 +18,9 @@ export default defineConfig({
         start_url: "/",
         icons: [
           {
-            src: "vite.svg",
-            sizes: "any",
-            type: "image/svg+xml",
+            src: "ems_logo.png",
+            sizes: "512x512",
+            type: "image/png",
             purpose: "any maskable",
           },
         ],
