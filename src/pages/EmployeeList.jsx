@@ -1,9 +1,22 @@
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { employeeService } from "../services/employeeService";
-import { Plus, Search, Edit2, Trash2, Printer, Filter } from "lucide-react";
+import {
+  Plus,
+  Search,
+  Edit2,
+  Trash2,
+  Printer,
+  Filter,
+  Download,
+} from "lucide-react";
 import EmployeeForm from "../components/EmployeeForm";
+import EmployeeCard from "../components/EmployeeCard";
+import Button from "../components/common/Button";
+import Modal from "../components/common/Modal";
 import { GENDER_OPTIONS } from "../data/dummyData";
 import toast from "react-hot-toast";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 import "../styles/EmployeeList.css";
 const EmployeeList = () => {
   const [employees, setEmployees] = useState([]);
@@ -13,6 +26,37 @@ const EmployeeList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterGender, setFilterGender] = useState("All");
   const [filterStatus, setFilterStatus] = useState("All");
+  const [printEmployee, setPrintEmployee] = useState(null);
+  const componentRef = useRef();
+  const handleDownloadPDF = async (employee) => {
+    setPrintEmployee(employee);
+    setTimeout(async () => {
+      const element = componentRef.current;
+      if (!element) return;
+      try {
+        const canvas = await html2canvas(element, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          logging: true,
+        });
+        const imgData = canvas.toDataURL("image/png");
+        const pdf = new jsPDF("p", "mm", "a4");
+        const imgWidth = 120;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        const x = (210 - imgWidth) / 2;
+        const y = 20;
+        pdf.addImage(imgData, "PNG", x, y, imgWidth, imgHeight);
+        pdf.save(`${employee.fullName.replace(/\s+/g, "_")}_Card.pdf`);
+        toast.success("PDF Downloaded successfully!");
+      } catch (error) {
+        console.error("PDF generation failed", error);
+        toast.error("Failed to generate PDF");
+      } finally {
+        setPrintEmployee(null);
+      }
+    }, 100);
+  };
   useEffect(() => {
     loadEmployees();
   }, []);
@@ -65,7 +109,7 @@ const EmployeeList = () => {
     setShowForm(false);
     loadEmployees();
   };
-  const handlePrint = () => {
+  const handlePrintList = () => {
     window.print();
   };
   const formatDate = (dateString) => {
@@ -75,32 +119,27 @@ const EmployeeList = () => {
       day: "numeric",
     });
   };
-  if (showForm) {
-    return (
-      <EmployeeForm
-        employee={editingEmployee}
-        onSubmit={handleFormSubmit}
-        onCancel={() => setShowForm(false)}
-      />
-    );
-  }
   return (
     <div className="employee-page">
       <div className="page-header">
         <h1 className="page-title">Employees</h1>
         <div className="header-actions">
-          <button
-            onClick={handlePrint}
-            className="emp-btn emp-btn-outline show-on-print-hover"
+          <Button
+            variant="outline"
+            icon={Printer}
+            onClick={handlePrintList}
+            className="show-on-print-hover"
           >
-            <Printer size={18} /> Print
-          </button>
-          <button
+            Print
+          </Button>
+          <Button
+            variant="primary"
+            icon={Plus}
             onClick={handleAddStart}
-            className="emp-btn emp-btn-primary no-print"
+            className="no-print"
           >
-            <Plus size={18} /> Add Employee
-          </button>
+            Add Employee
+          </Button>
         </div>
       </div>
       <div className="filters-card no-print">
@@ -194,7 +233,8 @@ const EmployeeList = () => {
                             active: newStatus,
                           });
                           toast.success(
-                            `Employee ${newStatus ? "activated" : "deactivated"
+                            `Employee ${
+                              newStatus ? "activated" : "deactivated"
                             } successfully`
                           );
                           loadEmployees();
@@ -217,20 +257,30 @@ const EmployeeList = () => {
                     </td>
                     <td className="table-td no-print">
                       <div className="action-buttons">
-                        <button
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          icon={Edit2}
                           onClick={() => handleEditStart(emp)}
-                          className="emp-btn emp-btn-outline icon-btn edit-btn"
                           title="Edit"
-                        >
-                          <Edit2 size={16} />
-                        </button>
-                        <button
+                          className="icon-btn"
+                        />
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          icon={Download}
+                          onClick={() => handleDownloadPDF(emp)}
+                          title="Download PDF"
+                          className="icon-btn"
+                        />
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          icon={Trash2}
                           onClick={() => handleDelete(emp.id)}
-                          className="emp-btn emp-btn-outline icon-btn delete-btn"
                           title="Delete"
-                        >
-                          <Trash2 size={16} />
-                        </button>
+                          className="icon-btn"
+                        />
                       </div>
                     </td>
                   </tr>
@@ -245,6 +295,29 @@ const EmployeeList = () => {
             </tbody>
           </table>
         </div>
+      </div>
+      <Modal
+        isOpen={showForm}
+        onClose={() => setShowForm(false)}
+        title={editingEmployee ? "Edit Employee" : "Add New Employee"}
+        size="lg"
+      >
+        <EmployeeForm
+          employee={editingEmployee}
+          onSubmit={handleFormSubmit}
+          onCancel={() => setShowForm(false)}
+          isModal={true}
+        />
+      </Modal>
+      {}
+      <div style={{ position: "absolute", left: "-9999px", top: "-9999px" }}>
+        <div ref={componentRef}>
+          <EmployeeCard employee={printEmployee} />
+        </div>
+      </div>
+      {}
+      <div className="print-only-container" style={{ display: "none" }}>
+        <EmployeeCard employee={printEmployee} />
       </div>
     </div>
   );

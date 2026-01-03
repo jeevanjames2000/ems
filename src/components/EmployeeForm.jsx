@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { Camera, X, Upload } from "lucide-react";
 import "../styles/EmployeeForm.css";
 import { GENDER_OPTIONS, STATE_OPTIONS } from "../data/dummyData";
-
-const EmployeeForm = ({ employee, onSubmit, onCancel }) => {
+import Button from "./common/Button";
+const EmployeeForm = ({ employee, onSubmit, onCancel, isModal = false }) => {
   const [formData, setFormData] = useState({
     fullName: "",
     gender: "Male",
@@ -49,15 +49,17 @@ const EmployeeForm = ({ employee, onSubmit, onCancel }) => {
     onSubmit(formData);
   };
   return (
-    <div className="form-card">
-      <div className="form-header">
-        <h2 className="form-title">
-          {employee ? "Edit Employee" : "Add New Employee"}
-        </h2>
-        <button onClick={onCancel} className="close-btn">
-          <X size={20} />
-        </button>
-      </div>
+    <div className={isModal ? "" : "form-card"}>
+      {!isModal && (
+        <div className="form-header">
+          <h2 className="form-title">
+            {employee ? "Edit Employee" : "Add New Employee"}
+          </h2>
+          <button onClick={onCancel} className="close-btn">
+            <X size={20} />
+          </button>
+        </div>
+      )}
       <form onSubmit={handleSubmit}>
         <div className="form-layout">
           <div className="image-upload-section">
@@ -157,16 +159,12 @@ const EmployeeForm = ({ employee, onSubmit, onCancel }) => {
           </div>
         </div>
         <div className="form-actions">
-          <button
-            type="button"
-            onClick={onCancel}
-            className="form-btn form-btn-outline"
-          >
+          <Button type="button" variant="outline" onClick={onCancel}>
             Cancel
-          </button>
-          <button type="submit" className="form-btn form-btn-primary">
+          </Button>
+          <Button type="submit" variant="primary">
             {employee ? "Save Changes" : "Add Employee"}
-          </button>
+          </Button>
         </div>
       </form>
     </div>
