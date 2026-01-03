@@ -1,15 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Outlet, Navigate, useLocation } from 'react-router-dom';
-import { Menu } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
+import LoadingSpinner from '../components/common/LoadingSpinner';
 import '../styles/DashboardLayout.css';
 
 const DashboardLayout = () => {
     const { user } = useAuth();
     const location = useLocation();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        setIsLoading(true);
+        const timer = setTimeout(() => setIsLoading(false), 800);
+        return () => clearTimeout(timer);
+    }, [location.pathname]);
 
     if (!user) {
         return <Navigate to="/login" state={{ from: location }} replace />;
@@ -17,6 +24,7 @@ const DashboardLayout = () => {
 
     return (
         <div className="dashboard-layout">
+            {isLoading && <LoadingSpinner fullScreen text="Loading..." />}
             <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
             {isSidebarOpen && (

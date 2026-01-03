@@ -1,21 +1,42 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 import { User, Lock, ArrowRight } from "lucide-react";
+import LoadingSpinner from "../components/common/LoadingSpinner";
 import "../styles/LoginPage.css";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { login } = useAuth();
+  const { login, user } = useAuth();
+  const navigate = useNavigate();
+
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [user, navigate]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const success = login(email, password);
-    if (!success) {
-      setError("Invalid credentials");
-    }
+    setIsLoading(true);
+    setError("");
+
+    setTimeout(() => {
+      const success = login(email, password);
+      if (!success) {
+        setError("Invalid credentials");
+        setIsLoading(false);
+      }
+    }, 2000);
   };
+
+  if (isLoading) {
+    return <LoadingSpinner fullScreen text="Signing in..." />;
+  }
 
   return (
     <div

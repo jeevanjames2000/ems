@@ -4,7 +4,6 @@ import LoginPage from "./pages/LoginPage";
 import DashboardLayout from "./pages/DashboardLayout";
 import Dashboard from "./pages/Dashboard";
 import EmployeeList from "./pages/EmployeeList";
-
 import { Toaster } from "react-hot-toast";
 
 function App() {
