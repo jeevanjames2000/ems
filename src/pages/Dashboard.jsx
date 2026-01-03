@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { employeeService } from "../services/employeeService";
 import { Users, UserCheck, UserX } from "lucide-react";
 import "../styles/Dashboard.css";
 
@@ -19,10 +20,18 @@ const StatCard = ({ title, value, icon: Icon, color, bg }) => (
 
 const Dashboard = () => {
   const [stats, setStats] = useState({ total: 0, active: 0, inactive: 0 });
+
+  useEffect(() => {
+    const employees = employeeService.getAll();
+    const total = employees.length;
+    const active = employees.filter((e) => e.active).length;
+    const inactive = total - active;
+    setStats({ total, active, inactive });
+  }, []);
+
   return (
     <div className="dashboard-container">
       <h1 className="dashboard-title">Dashboard Overview</h1>
-
       <div className="stats-grid">
         <StatCard
           title="Total Employees"

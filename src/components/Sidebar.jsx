@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { LayoutDashboard, LogOut } from "lucide-react";
+import { LayoutDashboard, Users, LogOut } from "lucide-react";
 import "../styles/Sidebar.css";
 
 const Sidebar = () => {
@@ -8,6 +8,7 @@ const Sidebar = () => {
 
   const navItems = [
     { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { path: "/employees", label: "Employees", icon: Users },
   ];
 
   return (
